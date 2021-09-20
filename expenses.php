@@ -33,7 +33,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['month'], $_POST['year
     GROUP BY accounts.id 
     ORDER BY created_at DESC 
     ";
-    $byuser = $con->query($sql);
+    $totalbyuser = $con->query($sql);
+
+    $calTotal = 0;
+    if ($totalbyuser->num_rows > 0) {
+        // output data of each row
+        $rows = $totalbyuser->fetch_all(MYSQLI_ASSOC);
+        foreach ($rows as $row){
+            $calTotal = $calTotal + intval($row['totalexpenses']);
+        }
+        $calTotal = $calTotal / 2;
+        echo "TOTALEXPENSES: $calTotal";
+
+        foreach ($rows as $row){
+            $res = intval($row['totalexpenses']) - $calTotal;
+            echo "<li class='list-group-item'>".$row['username'].": ". $res ." kr. </li>";
+        }
+    }
+    
+    $con->close();
     
 
 }
@@ -117,6 +135,16 @@ $total = "";
                     
                 </div>
             </div>
+        </div>
+        <div>
+        <?php
+            if ($totalbyuser->num_rows > 0) {
+                // output data of each row
+                while($row = $totalbyuser->fetch_assoc()) {
+                    echo "<li class='list-group-item'>".$row['username'].": ".$row['totalexpenses']." kr. </li>";
+                }
+                }
+            ?>
         </div>
         <div class="col-md-12 mt-4">
                     <div class="card">
