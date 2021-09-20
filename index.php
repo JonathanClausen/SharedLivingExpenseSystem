@@ -48,7 +48,7 @@ $result = $con->query($sql);
         <div class="col-md-6 mt-4">
             <div class="card">
                     <div class="card-body">
-                        <h2>Add expense</h2>
+                        <h2>Lates Expenses</h2>
 
                         <table class="table">
                             <thead class="thead-dark">
@@ -63,8 +63,10 @@ $result = $con->query($sql);
                             <?php
                             if ($result->num_rows > 0) {
                                 // output data of each row
-                                while($row = $result->fetch_assoc()) {
+                                $i = 0;
+                                while(($row = $result->fetch_assoc()) && $i < 15) {
                                     echo "<tr><td>".$row["amount"] ." kr.</td><td>".$row["description"] ."</td><td>".date("d-m-Y",strtotime($row["created_at"])). "</td><td>".$row["username"]. "</td></tr>";
+                                    $i++;
                                 }
                                 } else {
                                 echo "0 results";}
