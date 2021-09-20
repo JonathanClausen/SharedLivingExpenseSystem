@@ -1,3 +1,0 @@
-# SharedLivingExpenseSystem
-
-Changes to Readme
