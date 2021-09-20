@@ -42,8 +42,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['month'], $_POST['year
         foreach ($rows as $row){
             $calTotal = $calTotal + intval($row['totalexpenses']);
         }
-        $calTotal = $calTotal / 2;
-        echo "TOTALEXPENSES: $calTotal";
+        
+        $calTotal = intval($calTotal / 3);
+        echo "TOTALEXPENSES / 3: $calTotal";
 
         foreach ($rows as $row){
             $res = intval($row['totalexpenses']) - $calTotal;
