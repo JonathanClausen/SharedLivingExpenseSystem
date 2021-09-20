@@ -27,31 +27,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['month'], $_POST['year
 
     // Expenses calculations by user. HC and JC count as one.
 
-    $sql = "SELECT username, SUM(expenses.amount) AS totalexpenses 
-    FROM expenses JOIN accounts ON expenses.payee = accounts.id 
-    WHERE YEAR(created_at) = ".$_POST['year']." AND MONTH(created_at) = ".$_POST['month']." 
+    $sql = "SELECT username, SUM(expenses.amount) as totalexpenses
+    FROM accounts 
+    LEFT JOIN expenses 
+    ON accounts.id = expenses.payee AND YEAR(created_at) = ".$_POST['year']." AND MONTH(created_at) = ".$_POST['month']."
     GROUP BY accounts.id 
-    ORDER BY created_at DESC 
-    ";
+    ORDER BY created_at DESC";
     $totalbyuser = $con->query($sql);
 
     $calTotal = 0;
     if ($totalbyuser->num_rows > 0) {
         // output data of each row
-        $rows = $totalbyuser->fetch_all(MYSQLI_ASSOC);
-        foreach ($rows as $row){
+        $calTotalRows = $totalbyuser->fetch_all(MYSQLI_ASSOC);
+        foreach ($calTotalRows as $row){
             $calTotal = $calTotal + intval($row['totalexpenses']);
         }
         
         $calTotal = intval($calTotal / 3);
-        echo "TOTALEXPENSES / 3: $calTotal";
-
-        foreach ($rows as $row){
-            $res = intval($row['totalexpenses']) - $calTotal;
-            echo "<li class='list-group-item'>".$row['username'].": ". $res ." kr. </li>";
-        }
-    }
-    
+        
+    }    
     $con->close();
     
 
@@ -137,15 +131,22 @@ $total = "";
                 </div>
             </div>
         </div>
-        <div>
+        <div class="cold-md-12 mt-4">
         <?php
-            if ($totalbyuser->num_rows > 0) {
-                // output data of each row
-                while($row = $totalbyuser->fetch_assoc()) {
-                    echo "<li class='list-group-item'>".$row['username'].": ".$row['totalexpenses']." kr. </li>";
-                }
-                }
-            ?>
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && $totalbyuser->num_rows > 0): ?>
+                <div class="card">
+                    <div class="card-body">
+                    <h3>Distribution for <?php echo DateTime::createFromFormat('!m', $_POST['month'])->format('F')  ?></h3>
+                        <?php
+                            foreach ($calTotalRows as $row){
+                                $res = intval($row['totalexpenses']) - $calTotal;
+                                echo "<li class='list-group-item'>".$row['username'].": ". $res ." kr. </li>";
+                            }
+                        ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+                    
         </div>
         <div class="col-md-12 mt-4">
                     <div class="card">
