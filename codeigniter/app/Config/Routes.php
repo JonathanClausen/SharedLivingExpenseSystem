@@ -34,6 +34,9 @@ $routes->setAutoRoute(true);
 $routes->get('/', 'Home::index');
 $routes->get('users/(:segment)', 'Users::view/$1');
 $routes->get('users', 'Users::index');
+// Login
+$routes->get('login', 'Login::index');
+
 // Static pages
 $routes->get('(:any)', 'Pages::view/$1');
 

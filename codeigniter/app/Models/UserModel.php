@@ -6,7 +6,19 @@ use CodeIgniter\Model;
 
 class UserModel extends Model
 {
-    protected $table = 'accounts';
+    protected $table            = 'accounts';
+    protected $allowedFields    = [
+        'username', 'email', 'password',
+    ];
+    protected $returnType       = 'App\Entities\User';
+    protected $useTimestamps    = false;
+
+    public function login($username, $password)
+    {
+        $user = new \App\Entities\User();
+        $user->fill($this->asArray()->where(['username' => $username])->first());
+        return $user;
+    }
 
     public function getUsers($id = false)
     {
@@ -14,8 +26,8 @@ class UserModel extends Model
             return $this->findAll();
         }
 
-        return $this->asArray()
-                    ->where(['id' => $id])
-                    ->first();
+        $user = new \App\Entities\User();
+        $user->fill($this->asArray()->where(['id' => $id])->first());
+        return $user;
     }
 }

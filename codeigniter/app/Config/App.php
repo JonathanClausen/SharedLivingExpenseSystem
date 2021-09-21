@@ -23,7 +23,7 @@ class App extends BaseConfig
      *
      * @var string
      */
-    public $baseURL = 'http://test.concensur.dk/';
+    public $baseURL = 'http://localhost:8888/';
 
     /**
      * --------------------------------------------------------------------------
